@@ -14,16 +14,19 @@ class ArticleDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
+      backgroundColor: scheme.surface,
       body: CustomScrollView(
         slivers: [
           DetailAppBar(article: article),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 32),
             sliver: SliverList.list(
               children: [
                 DetailHeader(article: article),
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 DetailContent(article: article),
               ],
             ),

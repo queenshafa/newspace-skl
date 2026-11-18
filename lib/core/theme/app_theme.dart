@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color _seed = Color(0xFF1F5FA8);
+  static const Color _seed = Color(0xFFB4C2E8);
 
   static ThemeData light() => _build(Brightness.light);
   static ThemeData dark() => _build(Brightness.dark);

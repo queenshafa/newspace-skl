@@ -2,10 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../data/models/article.dart';
 
-/// Ringkasan + cuplikan isi artikel.
-///
-/// NewsAPI hanya mengembalikan ±200 karakter konten, jadi kita tampilkan
-/// catatan agar user membaca versi lengkap di situs sumber.
+/// Ringkasan artikel + kotak catatan trailer.
 class DetailContent extends StatelessWidget {
   const DetailContent({super.key, required this.article});
 
@@ -24,30 +21,46 @@ class DetailContent extends StatelessWidget {
         if (description.isNotEmpty)
           Text(
             description,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              height: 1.5,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontSize: 15.5,
+              height: 1.65,
+              color: scheme.onSurface.withValues(alpha: 0.88),
             ),
           ),
         if (content.isNotEmpty && content != description) ...[
           const SizedBox(height: 16),
-          Text(content, style: theme.textTheme.bodyLarge),
+          Text(
+            content,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontSize: 15.5,
+              height: 1.65,
+              color: scheme.onSurface.withValues(alpha: 0.88),
+            ),
+          ),
         ],
         const SizedBox(height: 24),
-        Card.filled(
-          color: scheme.surfaceContainerHigh,
-          margin: EdgeInsets.zero,
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 4,
-            ),
-            leading: Icon(Icons.info_outline_rounded, color: scheme.primary),
-            title: Text(
-              'Ini adalah cuplikan. Baca artikel lengkap di situs '
-              '${article.sourceName}.',
-              style: theme.textTheme.bodyMedium,
-            ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer.withValues(alpha: 0.45),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: scheme.primaryContainer, width: 1.2),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.info_outline_rounded, color: scheme.primary, size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'This is a trailer. Read the full article on ${article.sourceName}.',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

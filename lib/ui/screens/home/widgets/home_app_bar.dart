@@ -2,7 +2,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app/providers/navigation_provider.dart';
 
-import '../../../../core/utils/date_formatter.dart';
 import '../../../widgets/theme_toggle_button.dart';
 
 // TODO: Ubah HomeAppBar menjadi ConsumerWidget
@@ -20,14 +19,8 @@ class HomeAppBar extends ConsumerWidget {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            DateFormatter.today(),
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
           const SizedBox(height: 2),
-          Text('Warta', style: theme.textTheme.headlineMedium),
+          Text('newspace.', style: theme.textTheme.headlineMedium),
         ],
       ),
       actions: [

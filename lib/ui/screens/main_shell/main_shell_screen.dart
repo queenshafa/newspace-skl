@@ -7,7 +7,6 @@ import '../home/home_screen.dart';
 import '../search/search_screen.dart';
 import 'widgets/app_navigation_bar.dart';
 
-/// TODO: Ubah MainShellScreen menjadi ConsumerWidget saat Riverpod diimplementasikan
 class MainShellScreen extends ConsumerWidget {
   const MainShellScreen({super.key});
 
@@ -18,6 +17,7 @@ class MainShellScreen extends ConsumerWidget {
     final currentIndex = ref.watch(navigationProvider);
 
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(index: currentIndex, children: _pages),
       bottomNavigationBar: AppNavigationBar(
         currentIndex: currentIndex,

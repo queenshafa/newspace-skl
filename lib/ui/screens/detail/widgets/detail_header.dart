@@ -1,62 +1,78 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/utils/date_formatter.dart';
 import '../../../../data/models/article.dart';
-import '../../../widgets/source_label.dart';
 
-/// Judul artikel + info sumber, penulis, dan waktu terbit.
+/// Info sumber berita dan penulis di bawah gambar hero.
 class DetailHeader extends StatelessWidget {
   const DetailHeader({super.key, required this.article});
 
   final Article article;
+
+  String get _sourceInitials {
+    final words = article.sourceName.trim().split(RegExp(r'\s+'));
+    if (words.isEmpty || words.first.isEmpty) return 'N';
+    if (words.length == 1) {
+      return words.first
+          .substring(0, words.first.length >= 2 ? 2 : 1)
+          .toUpperCase();
+    }
+    return '${words.first[0]}${words[1][0]}'.toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final author = article.author;
-    final byline = author == null || author.isEmpty
-        ? article.sourceName
-        : author;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        SourceLabel(name: article.sourceName),
-        const SizedBox(height: 8),
-        Text(article.title, style: theme.textTheme.headlineSmall),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: scheme.primaryContainer,
-              child: Text(
-                byline.characters.first.toUpperCase(),
-                style: TextStyle(color: scheme.onPrimaryContainer),
-              ),
+        Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: scheme.primary,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            _sourceInitials,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: scheme.onPrimary,
+              fontWeight: FontWeight.w800,
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    byline,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelLarge,
-                  ),
-                  Text(
-                    DateFormatter.full(article.publishedAt),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                article.sourceName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: scheme.onSurface,
+                ),
               ),
-            ),
-          ],
+              if (author != null &&
+                  author.isNotEmpty &&
+                  author != article.sourceName) ...[
+                const SizedBox(height: 2),
+                Text(
+                  'By $author',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ],
     );

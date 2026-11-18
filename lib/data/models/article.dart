@@ -1,11 +1,4 @@
-// TODO 1: Buat class Article
-// 1. Buat class dengan properti: title, sourceName, author, description, url, imageUrl, publishedAt, content
-// 2. Buat factory constructor fromJson(Map<String, dynamic> json)
-// 3. Buat getter cleanContent untuk menghapus teks "[+... chars]" dari content
-// 4. Buat getter isValid untuk memastikan artikel bukan "[Removed]"
-
 class Article {
-  // Siswi akan melengkapi bagian ini.
   const Article({
     required this.title,
     required this.sourceName,
@@ -15,6 +8,9 @@ class Article {
     this.description,
     this.imageUrl,
     this.content,
+    this.featured = false,
+    this.launches = const [],
+    this.events = const [],
   });
 
   final String title;
@@ -25,62 +21,64 @@ class Article {
   final String? description;
   final String? imageUrl;
   final String? content;
+  final bool featured;
+  final List<dynamic> launches;
+  final List<dynamic> events;
 
-  // Implementasi cleanContent, memotong regular expression
-  String get cleanContent =>
-      (content ?? '').replaceAll(RegExp(r'\s*\[\+\d+ chars\]$'), '').trim();
+  String get cleanContent => (content ?? description ?? '').trim();
 
-  // Implementasi isValid
   bool get isValid =>
       title.isNotEmpty && title != '[Removed]' && url.isNotEmpty;
 
   @override
-  // jika nnilai di atas tidak terpenuhi maka function dibawaha akan mencari objek lain didalam Article
   bool operator ==(Object other) => other is Article && other.url == url;
 
-  // implement hashCode
-  // mengembalikan nilai object menjadi nilai acak
-  // getter tersebt berfungsi untuk mengubah semua objek menjadi sebuah kode acak, tujuannya
-  // agar setiap objek yang dihasilkan khususnya dari API tetap aman.
+  @override
+  int get hashCode => url.hashCode;
 
-  // Implementasi fromJson
   factory Article.fromJson(Map<String, dynamic> json) {
-    // konversi dari hasil json ke bahasa dart
-    final source = json['source'] as Map<String, dynamic>?;
+    final authors = json['authors'] as List<dynamic>? ?? [];
+
     return Article(
       title: json['title'] as String? ?? '',
+      sourceName: json['news_site'] as String? ?? 'Unknown',
       url: json['url'] as String? ?? '',
-      sourceName: source?['name'] as String? ?? 'Tanpa Sumber',
-      publishedAt: DateTime.tryParse(json['publishedAt'] as String? ?? ''),
-      author: json['author'] as String?,
-      description: json['description'] as String?,
-      imageUrl: json['urlToImage'] as String?,
-      content: json['content'] as String?,
+      publishedAt: DateTime.tryParse(json['published_at'] as String? ?? ''),
+      author: authors.isNotEmpty
+          ? (authors.first as Map<String, dynamic>)['name'] as String?
+          : null,
+      description: json['summary'] as String?,
+      imageUrl: json['image_url'] as String?,
+      content: json['summary'] as String?,
+      featured: json['featured'] as bool? ?? false,
+      launches: json['launches'] as List<dynamic>? ?? const [],
+      events: json['events'] as List<dynamic>? ?? const [],
     );
   }
 
-  // Implementasi toJson
-  // ya semacamm verifikasi dua langkah
   Map<String, dynamic> toJson() => {
     'title': title,
+    'news_site': sourceName,
     'url': url,
-    'source': {'name': sourceName},
-    'description': description,
-    'content': content,
-    'author': author,
-    'urlToImage': imageUrl,
-    'publishedAt': publishedAt?.toIso8601String(),
+    'published_at': publishedAt?.toIso8601String(),
+    'summary': description,
+    'image_url': imageUrl,
+    'authors': author == null
+        ? []
+        : [
+            {'name': author},
+          ],
+    'featured': featured,
+    'launches': launches,
+    'events': events,
   };
 
-  // Dummy article untuk UI sementara
   static final dummy = Article(
-    title: 'Berita Menarik Hari Ini',
-    sourceName: 'Warta News',
-    url: 'https://example.com',
+    title: 'NASA Announces New Space Mission',
+    sourceName: 'NASA',
+    url: 'https://www.nasa.gov/',
     publishedAt: DateTime.now(),
-    description:
-        'Ini adalah deskripsi berita sementara sebelum API disambungkan.',
-    imageUrl: 'https://picsum.photos/400/200',
-    content: 'Isi konten berita yang lebih panjang akan muncul di sini.',
+    description: 'An exciting update from the space industry.',
+    imageUrl: null,
   );
 }

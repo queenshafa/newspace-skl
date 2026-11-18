@@ -12,49 +12,114 @@ class BookmarksScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookmarksAsync = ref.watch(bookmarksProvider);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
-    return CustomScrollView(
-      slivers: [
-        const SliverAppBar.large(
-          title: Text('Tersimpan'),
-          actions: [ThemeToggleButton(), SizedBox(width: 8)],
-        ),
+    // Warna header sesuai seed color #B4C2E8 (adaptif untuk dark mode)
+    final headerColor = isDark
+        ? scheme.surfaceContainerHighest
+        : const Color(0xFFB4C2E8);
 
-        bookmarksAsync.when(
-          // Saat data sedang dimuat
-          loading: () => const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator()),
-          ),
+    return Scaffold(
+      backgroundColor: headerColor,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // BAGIAN ATAS: Header Saved Articles
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 16, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Saved Articles',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            color: isDark ? scheme.onSurface : Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      IconTheme(
+                        data: IconThemeData(
+                          color: isDark ? scheme.onSurface : Colors.white,
+                        ),
+                        child: const ThemeToggleButton(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Your bookmarked space stories and updates',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: isDark
+                          ? scheme.onSurfaceVariant
+                          : Colors.white.withValues(alpha: 0.9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-          // Saat terjadi error
-          error: (error, stackTrace) => SliverFillRemaining(
-            child: Center(child: Text('Gagal memuat bookmark: $error')),
-          ),
-
-          // Saat data berhasil dimuat
-          data: (bookmarks) {
-            if (bookmarks.isEmpty) {
-              return const SliverFillRemaining(
-                hasScrollBody: false,
-                child: EmptyState(
-                  icon: Icons.bookmark_border_rounded,
-                  title: 'Belum ada berita tersimpan',
-                  message: 'Ketuk ikon bookmark pada berita\nuntuk membacanya nanti.',
+            // BAGIAN BAWAH: Sheet Putih Melengkung + Daftar Bookmark
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(32),
+                  ),
                 ),
-              );
-            }
+                clipBehavior: Clip.antiAlias,
+                child: bookmarksAsync.when(
+                  // Saat data sedang dimuat
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
 
-            return SliverList.separated(
-              itemCount: bookmarks.length,
-              separatorBuilder: (_, _) =>
-                  const Divider(indent: 16, endIndent: 16),
-              itemBuilder: (_, index) {
-                return BookmarkItem(article: bookmarks[index]);
-              },
-            );
-          },
+                  // Saat terjadi error
+                  error: (error, _) => Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        'Gagal memuat bookmark: $error',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+
+                  // Saat data berhasil dimuat
+                  data: (bookmarks) {
+                    if (bookmarks.isEmpty) {
+                      return const EmptyState(
+                        icon: Icons.bookmark_border_rounded,
+                        title: 'Belum ada berita tersimpan',
+                        message: 'Ketuk ikon bookmark pada berita\nuntuk membacanya nanti.',
+                      );
+                    }
+
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+                      itemCount: bookmarks.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 12),
+                      itemBuilder: (_, index) {
+                        return BookmarkItem(article: bookmarks[index]);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
