@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // TODO: Ubah menjadi ConsumerWidget saat Riverpod diimplementasikan
 class AppNavigationBar extends StatelessWidget {

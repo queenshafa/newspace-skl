@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Label nama sumber berita (mis. "BBC News") berwarna primary.
 class SourceLabel extends StatelessWidget {

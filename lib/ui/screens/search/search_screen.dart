@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'widgets/search_input.dart';
 import 'widgets/search_results.dart';

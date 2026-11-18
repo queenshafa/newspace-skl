@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Skeleton loading berdenyut yang meniru bentuk [ArticleTile].
 class LoadingSkeleton extends StatefulWidget {

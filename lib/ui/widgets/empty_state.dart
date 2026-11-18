@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Tampilan kosong/informasi generik: ikon, judul, pesan, dan aksi opsional.
 class EmptyState extends StatelessWidget {

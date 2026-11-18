@@ -14,10 +14,10 @@ class ApiConstants {
   static String get apiKey => (dotenv.maybeGet('NEWS_API_KEY') ?? '').trim();
 
   //unutk klasivikasi negara yang akan di tampilkan beritanya di top healsines
-  static const String country = 'id';
+  static const String country = 'us';
 
   //untuk bahasa yang akan di tampilkan ketika proses pencarian
-  static const String language = 'id';
+  static const String language = 'en';
 
   // untuk memberitahu berapa baynyak berapa berita yang akna di tampilkan dalam sekali request
   static const int pageSize = 30;
